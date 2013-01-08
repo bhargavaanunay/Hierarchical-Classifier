@@ -7,13 +7,10 @@ def main():
     root_path = raw_input()
     print "Enter specific category:",
     sp_category = raw_input()
-    print "Enter limit (0 for infinite):",
+    print "Enter limit:",
     limit_ = int(raw_input())
     sp_crawler = Crawler(seed, sp_category, root_path)
-    if limit_ == 0:
-        sp_crawler.crawl()
-    else:
-        sp_crawler.crawl(limit=limit_)
+    sp_crawler.crawl(limit=limit_)
 
 if __name__ == '__main__':
     main()

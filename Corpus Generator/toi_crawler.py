@@ -1,5 +1,22 @@
 class Crawler:
     
+    '''This is a crawler for http://timesofindia.indiatimes.com (Times of India).
+    This crawler is topic-oriented and its purpose is to crawl
+    and fetch only those articles that belong to the topic passed as argument.
+    It takes advantage of the topic-oriented URL structure of TOI
+    and specific markup tags for the news content. The topic to be passed as sp_category.
+    Its structure should be broad-classification/specific-classification.
+    For example: sports/cricket
+    The crawler requires the root directory of the Corpus as root_path
+    and assumes that the directory root_path/sp_category exists.
+    The fetched articles are stored as txt files including the title and the body of the article.
+    The names of the txt files will be 1.txt, 2.txt, etc.
+    A limit on the number of articles can be specified. By default, it is 100.
+    The file number and the title of the article are printed on the console as they get saved.
+    The title is marked-up with [TITLE] and [/TITLE] in the saved files. 
+    
+    '''
+    
     def __init__(self, seed, sp_category, root_path):
         self.seed = seed
         self.links = set([seed])
@@ -40,7 +57,7 @@ class Crawler:
     def output(self, content, file_counter):
         start_title = content.find('<title>')
         end_title = content.find('</title>', start_title + 1)
-        title = content[(start_title + 7):end_title]
+        title = '[TITLE]' + content[(start_title + 7):end_title] + '[/TITLE]'
         text = title + '\n\n'
         start_tmp = content.find('<tmp>')
         news = None
