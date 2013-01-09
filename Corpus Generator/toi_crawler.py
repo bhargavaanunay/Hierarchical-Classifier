@@ -21,6 +21,8 @@ class Crawler:
     '''
     
     def __init__(self, seed, sp_category, root_path):
+        if not seed.startswith('http'):
+            seed = 'http://' + seed
         self.__seed = seed
         self.__links = set([seed])
         self.__sp_category = sp_category
@@ -65,19 +67,24 @@ class Crawler:
             idx = content.find("href=")
         return p
     
-    def __output(self, content, file_counter):
-        '''Stores the extracted news article to a file and prints its title on the screen.
+    def __extract_title(self, content):
+        '''Extracts and returns the title of the news article from the raw HTML content.
         
-        returns True if content is present and is successfully saved on a file;
-        returns False otherwise.
+        The title is marked-up with [TITLE] and [/TITLE] tags.
         
         '''
         start_title = content.find('<title>')
         end_title = content.find('</title>', start_title + 1)
+        toi_idx = content.find(' - The Times of India', start_title + 1)
+        if toi_idx != -1 and toi_idx < end_title:
+            end_title = toi_idx
         title = '[TITLE]' + content[(start_title + 7):end_title] + '[/TITLE]'
-        text = title + '\n\n'
-        start_tmp = content.find('<tmp>')
+        return title
+    
+    def __extract_news(self, content):
+        '''Extracts and returns the news article from the raw HTML content.'''
         news = None
+        start_tmp = content.find('<tmp>')
         if start_tmp != -1:
             end_tmp = content.find('</tmp>', start_tmp + 1)
             news = content[(start_tmp + 5):end_tmp]
@@ -86,8 +93,19 @@ class Crawler:
             if start_normal != -1:
                 end_normal = content.find('</div>', start_normal + 1)
                 news = content[(start_normal + 20):end_normal]
+        return news
+    
+    def __output(self, content, file_counter):
+        '''Stores the extracted news article to a file and prints its title on the screen.
+        
+        returns True if content is present and is successfully saved on a file;
+        returns False otherwise.
+        
+        '''
+        news = self.__extract_news(content)        
         if news is not None:
-            text = text + news + '\n'
+            title = self.__extract_title(content)
+            text = title + '\n\n' + news + '\n'
             file_name = self.__path + self.__sp_category + '/' + str(file_counter) + '.txt'
             f = open(file_name, 'w')
             with f:
@@ -102,6 +120,7 @@ class Crawler:
         to_crawl = [self.__seed]
         crawled = set([])
         i = 0
+        print "\nArticles:\n"
         while i < len(to_crawl) and limit > 0:
             page = to_crawl[i]
             i = i + 1
@@ -115,3 +134,4 @@ class Crawler:
                     file_counter = file_counter + 1
                     limit = limit - 1
                 crawled.add(page)
+        print "\n\n" + str((file_counter - 1)) + " articles saved.\n"
