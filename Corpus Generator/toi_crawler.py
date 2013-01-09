@@ -1,33 +1,38 @@
 class Crawler:
     
     '''This is a crawler for http://timesofindia.indiatimes.com (Times of India).
-    This crawler is topic-oriented and its purpose is to crawl
-    and fetch only those articles that belong to the topic passed as argument.
-    It takes advantage of the topic-oriented URL structure of TOI
-    and specific markup tags for the news content. The topic to be passed as sp_category.
+    
+    This crawler is topic-oriented and its purpose is to crawl and fetch only
+    those articles that belong to the topic passed as argument. It takes
+    advantage of the topic-oriented URL structure of TOI and specific markup
+    tags for the news content. The topic is to be passed as sp_category.
     Its structure should be broad-classification/specific-classification.
     For example: sports/cricket
-    The crawler requires the root directory of the Corpus as root_path
-    and assumes that the directory root_path/sp_category exists.
-    The fetched articles are stored as txt files including the title and the body of the article.
+    The crawler requires the root directory of the Corpus as root_path and
+    assumes that the directory root_path/sp_category exists.
+    The fetched articles are stored as txt files including the title and
+    the body of the article.
     The names of the txt files will be 1.txt, 2.txt, etc.
     A limit on the number of articles can be specified. By default, it is 100.
-    The file number and the title of the article are printed on the console as they get saved.
+    The file number and the title of the article are printed on the console
+    as they get saved.
     The title is marked-up with [TITLE] and [/TITLE] in the saved files. 
     
     '''
     
     def __init__(self, seed, sp_category, root_path):
-        self.seed = seed
-        self.links = set([seed])
-        self.sp_category = sp_category
-        self.path = root_path
-        if self.path[-1] != '/':
-                self.path = self.path + '/'
+        self.__seed = seed
+        self.__links = set([seed])
+        self.__sp_category = sp_category
+        self.__path = root_path
+        if self.__path[-1] != '/':
+                self.__path = self.__path + '/'
         
-    def get_page(self, url):
+    def __get_page(self, url):
         '''Fetches the contents of the page associated with the URL.
+        
         If an exception occurs, "" is returned.
+        Otherwise, the contents of the page is returned as str.
         
         '''
         try:
@@ -36,15 +41,15 @@ class Crawler:
         except:
             return ""
     
-    def union(self, to_crawl, links):
+    def __union(self, to_crawl, outlinks):
         '''Adds only new links to the list of URLs to be crawled'''
-        for x in links:
-            if x not in self.links:
+        for x in outlinks:
+            if x not in self.__links:
                 to_crawl.append(x)
-                self.links.add(x)
+                self.__links.add(x)
             
-    def get_all_links(self, content):
-        '''Returns all the links on a page that satisfy the criteria given to the crawler.'''
+    def __get_all_links(self, content):
+        '''Returns the list of links on a page that satisfy the criteria given to the crawler.'''
         p = []
         idx = content.find("href=")
         while idx != -1:
@@ -52,7 +57,7 @@ class Crawler:
             end_link = content.find("\"", start_link + 1)
             start_link = start_link + 1
             link = content[start_link:end_link]
-            if link.find(self.sp_category) != -1 and link.find('articleshow') != -1 and link.endswith('.cms'):
+            if link.find(self.__sp_category) != -1 and link.find('articleshow') != -1 and link.endswith('.cms'):
                 if link.find("http", start_link) == -1:
                     link = "http://timesofindia.indiatimes.com" + link
                 p.append(link)
@@ -60,8 +65,13 @@ class Crawler:
             idx = content.find("href=")
         return p
     
-    def output(self, content, file_counter):
-        '''Stores the extracted news article to a file and prints its title on the screen.'''
+    def __output(self, content, file_counter):
+        '''Stores the extracted news article to a file and prints its title on the screen.
+        
+        returns True if content is present and is successfully saved on a file;
+        returns False otherwise.
+        
+        '''
         start_title = content.find('<title>')
         end_title = content.find('</title>', start_title + 1)
         title = '[TITLE]' + content[(start_title + 7):end_title] + '[/TITLE]'
@@ -78,7 +88,7 @@ class Crawler:
                 news = content[(start_normal + 20):end_normal]
         if news is not None:
             text = text + news + '\n'
-            file_name = self.path + self.sp_category + '/' + str(file_counter) + '.txt'
+            file_name = self.__path + self.__sp_category + '/' + str(file_counter) + '.txt'
             f = open(file_name, 'w')
             with f:
                 f.write(text)
@@ -89,19 +99,19 @@ class Crawler:
     def crawl(self, limit=100): # limit = no. of pages to crawl, else will go infinitely
         '''Use this function to start crawling the website.'''
         file_counter = 1
-        to_crawl = [self.seed]
+        to_crawl = [self.__seed]
         crawled = set([])
         i = 0
         while i < len(to_crawl) and limit > 0:
             page = to_crawl[i]
             i = i + 1
             if page not in crawled:
-                content = self.get_page(page)
-                outlinks = self.get_all_links(content)
-                self.union(to_crawl, outlinks)
+                content = self.__get_page(page)
+                outlinks = self.__get_all_links(content)
+                self.__union(to_crawl, outlinks)
                 if i == 1:
                     continue # Assuming that the seed URL is a topic page and not an article page
-                if self.output(content, file_counter):
+                if self.__output(content, file_counter):
                     file_counter = file_counter + 1
                     limit = limit - 1
                 crawled.add(page)
