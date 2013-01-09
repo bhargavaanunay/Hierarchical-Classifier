@@ -26,19 +26,25 @@ class Crawler:
                 self.path = self.path + '/'
         
     def get_page(self, url):
+        '''Fetches the contents of the page associated with the URL.
+        If an exception occurs, "" is returned.
+        
+        '''
         try:
             import urllib
             return urllib.urlopen(url).read()
         except:
             return ""
     
-    def union(self, p, links):
+    def union(self, to_crawl, links):
+        '''Adds only new links to the list of URLs to be crawled'''
         for x in links:
             if x not in self.links:
-                p.append(x)
+                to_crawl.append(x)
                 self.links.add(x)
             
     def get_all_links(self, content):
+        '''Returns all the links on a page that satisfy the criteria given to the crawler.'''
         p = []
         idx = content.find("href=")
         while idx != -1:
@@ -55,6 +61,7 @@ class Crawler:
         return p
     
     def output(self, content, file_counter):
+        '''Stores the extracted news article to a file and prints its title on the screen.'''
         start_title = content.find('<title>')
         end_title = content.find('</title>', start_title + 1)
         title = '[TITLE]' + content[(start_title + 7):end_title] + '[/TITLE]'
@@ -80,6 +87,7 @@ class Crawler:
         return False
     
     def crawl(self, limit=100): # limit = no. of pages to crawl, else will go infinitely
+        '''Use this function to start crawling the website.'''
         file_counter = 1
         to_crawl = [self.seed]
         crawled = set([])
