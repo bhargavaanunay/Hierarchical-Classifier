@@ -1,3 +1,8 @@
+# A crawler for the Times of India website.
+# 
+# Created by: Ayush Jaiswal
+#
+
 class Crawler:
     
     '''This is a crawler for http://timesofindia.indiatimes.com (Times of India).
