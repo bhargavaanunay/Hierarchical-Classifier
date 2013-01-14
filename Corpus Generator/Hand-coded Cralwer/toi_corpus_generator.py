@@ -1,3 +1,8 @@
+# Controller for the crawler
+#
+# Created by: Ayush Jaiswal
+#
+
 from toi_crawler import Crawler
 
 def main():
