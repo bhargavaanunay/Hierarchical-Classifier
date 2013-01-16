@@ -7,10 +7,10 @@ from scrapy.exceptions import DropItem
 import json
 
 class ToiCrawlerPipeline(object):
-    i,j=0,0
+    i,j=10,0
     def __init__(self):
 	      self.i=self.i+1
-	      self.file = open('toi_sports_cricket_%s.jl'%self.i, 'wb')
+	      #self.file = open('toi_sports_cricket_%s.jl'%self.i, 'wb')
     
     def process_item(self, item, spider):
 	      self.j=self.j+1
