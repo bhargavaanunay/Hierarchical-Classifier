@@ -31,9 +31,9 @@ class Crawler:
         self.__seed = seed
         self.__links = set([seed])
         self.__sp_category = sp_category
-        self.__path = root_path
-        if self.__path[-1] != '/':
-                self.__path = self.__path + '/'
+        if root_path[-1] != '/':
+                root_path = root_path + '/'
+        self.__path = root_path + self.__sp_category + '/'
         
     def __get_page(self, url):
         '''Fetches the contents of the page associated with the URL.
@@ -111,7 +111,7 @@ class Crawler:
         if news is not None:
             title = self.__extract_title(content)
             text = title + '\n\n' + news + '\n'
-            file_name = self.__path + self.__sp_category + '/' + str(file_counter) + '.txt'
+            file_name = self.__path + str(file_counter) + '.txt'
             f = open(file_name, 'w')
             with f:
                 f.write(text)

@@ -45,7 +45,7 @@ class ToiCrawlerSpider(BaseSpider):
                  w['url']=currentURL
                  yield w
         hxs = HtmlXPathSelector(response)
-        sites = hxs.select('//a[contains(@href,"/sports/cricket")]/@href').extract()
+        sites = hxs.select('//a[contains(@href,"/%s")]/@href' %self.sp_category).extract()
         
         for site in sites:
             #print "\n\n\n",site,"\n\n\n"
@@ -53,7 +53,7 @@ class ToiCrawlerSpider(BaseSpider):
             #print "\n\n\n",u[0],"\n\n\n"
             site=str(site)
             #print "\n\n\n",site,"\n\n\n"
-            if site.find('video/sports/cricket')== -1:
+            if site.find('video/%s' %self.sp_category)== -1:
                  if site.find('http://')==-1:
                     site= "http://timesofindia.indiatimes.com"+ site
                     print "\n\n\n", site, "\n\n\n"
