@@ -10,10 +10,16 @@ class ToiCrawlerPipeline(object):
 
     def __init__(self):
         self.j = 0
+        print "Enter ABSOLUTE path of top directory of Corpus:",
+        self.path = raw_input()
+        if self.path[-1] == '/':
+            self.path = self.path[:-1]
+        print "Enter specific category:",
+        self.category = raw_input()
     
     def process_item(self, item, spider):
         self.j=self.j+1
-        self.file = open('toi_sports_cricket_%s.jl'%self.j, 'wb')
+        self.file = open('%s/%s/%s.jl'%(self.path,self.category,self.j), 'wb')
         line = json.dumps(dict(item)) + "\n"
         self.file.write(line)
         return item

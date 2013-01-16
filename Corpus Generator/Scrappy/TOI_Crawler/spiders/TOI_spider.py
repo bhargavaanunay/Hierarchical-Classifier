@@ -9,8 +9,14 @@ class ToiCrawlerSpider(BaseSpider):
 
     name = "Toi"
     allowed_domains = ["timesofindia.indiatimes.com"]
-    start_urls = [
-        "http://timesofindia.indiatimes.com/sports/cricket/sphome/4719161.cms",]
+    print "\n\nEnter URL of the topic page:",
+    seed = raw_input()
+    start_urls = [seed]
+        #"http://timesofindia.indiatimes.com/sports/cricket/sphome/4719161.cms",]
+    idx1 = seed.find('.com/') + 5
+    idx2 = seed.find('/', idx1 + 1)
+    idx2 = seed.find('/', idx2 + 1)
+    sp_category = seed[idx1:idx2]
 
     def parse(self, response):
         #print "\n\n\n\n\nRESPONSE ",response.url,"\n\n\n\n\n"
