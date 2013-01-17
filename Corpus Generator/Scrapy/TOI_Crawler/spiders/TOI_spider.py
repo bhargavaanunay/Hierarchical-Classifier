@@ -2,12 +2,14 @@ from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
 from TOI_Crawler.items import ToiCrawlerItem
+import os
 
 class ToiCrawlerSpider(BaseSpider):
 
     name = "Toi"
     allowed_domains = ["timesofindia.indiatimes.com"]
-    print "\nEnter URL of a seed page (page of an article, not a topic):"
+    os.system('clear')
+    print "Enter URL of a seed page (page of an article, not a topic):"
     seed = raw_input()
     start_urls = [seed]
     idx1 = seed.find('.com/') + 5
@@ -45,7 +47,7 @@ class ToiCrawlerSpider(BaseSpider):
             if site.find('video/%s' % self.sp_category) == -1:
                  if site.find('http://')==-1:
                     site = "http://timesofindia.indiatimes.com" + site
-                    print "\n\n\n", site, "\n\n\n"
+                    # May help to debug: print site
                     yield Request(site, callback=self.parse)
                  else:
                     yield Request(site, callback=self.parse)             
