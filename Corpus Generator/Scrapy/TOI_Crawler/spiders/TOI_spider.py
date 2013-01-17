@@ -2,6 +2,7 @@ from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
 from TOI_Crawler.items import ToiCrawlerItem
+from TOI_Crawler.path_fixer import fix_path
 import os
 
 class ToiCrawlerSpider(BaseSpider):
@@ -19,6 +20,8 @@ class ToiCrawlerSpider(BaseSpider):
     links_with_error = []
     print "\nEnter ABSOLUTE path of the directory where you want the error file to be saved:",
     err_links_file_loc = raw_input()
+    err_count = 0
+    fix_path(err_links_file_loc)
     if err_links_file_loc[-1] == '/':
         err_links_file_loc = err_links_file_loc[:-1]
 
@@ -58,7 +61,11 @@ class ToiCrawlerSpider(BaseSpider):
                     yield Request(site, callback=self.parse)
                  else:
                     yield Request(site, callback=self.parse)
+        if self.err_count == 0:
+            error_file = open('%s/0_error_pages.txt' % self.err_links_file_loc, 'w')
+            error_file.close()
         error_file = open('%s/0_error_pages.txt' % self.err_links_file_loc, 'a')
         with error_file:
             for link in self.links_with_error:
                 error_file.write(link + '\n')
+                self.err_count = self.err_count + 1

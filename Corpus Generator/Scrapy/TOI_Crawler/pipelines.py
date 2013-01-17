@@ -6,6 +6,7 @@
 from scrapy.exceptions import DropItem
 import os
 import json
+from TOI_Crawler.path_fixer import fix_path
 
 class ToiCrawlerPipeline(object):
 
@@ -18,6 +19,10 @@ class ToiCrawlerPipeline(object):
         print "\nEnter specific category:",
         self.category = raw_input()
         print
+        complete_path = self.path + '/' + self.category
+        path_broad = complete_path[:complete_path.rfind('/')]
+        fix_path(path_broad)
+        fix_path(complete_path)
     
     def process_item(self, item, spider):
         self.j=self.j+1
