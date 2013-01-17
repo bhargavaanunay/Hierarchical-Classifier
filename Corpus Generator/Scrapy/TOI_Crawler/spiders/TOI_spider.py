@@ -16,6 +16,11 @@ class ToiCrawlerSpider(BaseSpider):
     idx2 = seed.find('/', idx1 + 1)
     idx2 = seed.find('/', idx2 + 1)
     sp_category = seed[idx1:idx2]
+    links_with_error = []
+    print "\nEnter ABSOLUTE path of the directory where you want the error file to be saved:"
+    err_links_file_loc = raw_input()
+    if err_links_file_loc[-1] == '/':
+        err_links_file_loc = err_links_file_loc[:-1]
 
     def parse(self, response):
         w = ToiCrawlerItem()
@@ -29,7 +34,7 @@ class ToiCrawlerSpider(BaseSpider):
             if content1.find('a') == -1:
                  con = hxs.select('//div[contains(@class,"Normal")]')
                  if len(con) > 1:
-                     print "\n\n\nHELLO HELLO HELLO\n\n\n"
+                     self.links_with_error.append(currentURL)
                  else:
                      content = con.select('text()').extract()
                      w['content'] = content
@@ -41,13 +46,16 @@ class ToiCrawlerSpider(BaseSpider):
                  yield w
         hxs = HtmlXPathSelector(response)
         sites = hxs.select('//a[contains(@href,"/%s")]/@href' % self.sp_category).extract()
-        
         for site in sites:
             site = str(site)
-            if site.find('video/%s' % self.sp_category) == -1:
+            if site.find('/videos/') == -1:
                  if site.find('http://')==-1:
                     site = "http://timesofindia.indiatimes.com" + site
                     # May help to debug: print site
                     yield Request(site, callback=self.parse)
                  else:
-                    yield Request(site, callback=self.parse)             
+                    yield Request(site, callback=self.parse)
+        error_file = open('%s/0_error_pages.txt' % self.err_links_file_loc, 'a')
+        with error_file:
+            for link in self.links_with_error:
+                error_file.write(link + '\n')

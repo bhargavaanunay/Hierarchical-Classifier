@@ -19,4 +19,5 @@ DEFAULT_ITEM_CLASS = 'TOI_Crawler.items.ToiCrawlerItem'
 ITEM_PIPELINES = ['TOI_Crawler.pipelines.ToiCrawlerPipeline']
 DUPEFILTER_CLASS = 'scrapy.dupefilter.RFPDupeFilter'
 
+LOG_LEVEL = 'INFO'
 
