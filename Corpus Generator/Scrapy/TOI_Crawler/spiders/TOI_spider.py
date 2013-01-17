@@ -2,7 +2,6 @@ from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
 from TOI_Crawler.items import ToiCrawlerItem
-from TOI_Crawler.path_fixer import fix_path
 import os
 
 class ToiCrawlerSpider(BaseSpider):
@@ -18,13 +17,7 @@ class ToiCrawlerSpider(BaseSpider):
     idx2 = seed.find('/', idx2 + 1)
     sp_category = seed[idx1:idx2]
     links_with_error = []
-    print "\nEnter ABSOLUTE path of the directory where you want the error file to be saved:",
-    err_links_file_loc = raw_input()
-    err_count = 0
-    fix_path(err_links_file_loc)
-    if err_links_file_loc[-1] == '/':
-        err_links_file_loc = err_links_file_loc[:-1]
-
+    
     def parse(self, response):
         w = ToiCrawlerItem()
         currentURL = response.url
