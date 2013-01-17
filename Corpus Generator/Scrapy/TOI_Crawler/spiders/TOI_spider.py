@@ -9,7 +9,7 @@ class ToiCrawlerSpider(BaseSpider):
     name = "Toi"
     allowed_domains = ["timesofindia.indiatimes.com"]
     os.system('clear')
-    print "Enter URL of a seed page (page of an article, not a topic):"
+    print "Enter URL of a seed page (page of an article, not a topic):",
     seed = raw_input()
     start_urls = [seed]
     idx1 = seed.find('.com/') + 5
@@ -17,7 +17,7 @@ class ToiCrawlerSpider(BaseSpider):
     idx2 = seed.find('/', idx2 + 1)
     sp_category = seed[idx1:idx2]
     links_with_error = []
-    print "\nEnter ABSOLUTE path of the directory where you want the error file to be saved:"
+    print "\nEnter ABSOLUTE path of the directory where you want the error file to be saved:",
     err_links_file_loc = raw_input()
     if err_links_file_loc[-1] == '/':
         err_links_file_loc = err_links_file_loc[:-1]
@@ -48,6 +48,9 @@ class ToiCrawlerSpider(BaseSpider):
         sites = hxs.select('//a[contains(@href,"/%s")]/@href' % self.sp_category).extract()
         for site in sites:
             site = str(site)
+            idx = site.rfind('?')
+            if idx != -1:
+                site = site[:idx]
             if site.find('/videos/') == -1:
                  if site.find('http://')==-1:
                     site = "http://timesofindia.indiatimes.com" + site
