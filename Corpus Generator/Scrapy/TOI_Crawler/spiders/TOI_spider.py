@@ -31,7 +31,7 @@ class ToiCrawlerSpider(BaseSpider):
         if currentURL.find('/articleshow/') != -1:
             hxs = HtmlXPathSelector(response)
             title = hxs.select('//title/text()').extract()
-            w['title']= title
+            w['title'] = title
             content = hxs.select('//tmp/text()').extract()
             content1 = str(content)
             if content1.find('a') == -1:
@@ -61,11 +61,3 @@ class ToiCrawlerSpider(BaseSpider):
                     yield Request(site, callback=self.parse)
                  else:
                     yield Request(site, callback=self.parse)
-        if self.err_count == 0:
-            error_file = open('%s/0_error_pages.txt' % self.err_links_file_loc, 'w')
-            error_file.close()
-        error_file = open('%s/0_error_pages.txt' % self.err_links_file_loc, 'a')
-        with error_file:
-            for link in self.links_with_error:
-                error_file.write(link + '\n')
-                self.err_count = self.err_count + 1
