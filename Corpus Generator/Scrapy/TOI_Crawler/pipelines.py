@@ -4,7 +4,6 @@
 # See: http://doc.scrapy.org/topics/item-pipeline.html
 
 from scrapy.exceptions import DropItem
-import os
 import json
 from TOI_Crawler.path_fixer import fix_path
 
