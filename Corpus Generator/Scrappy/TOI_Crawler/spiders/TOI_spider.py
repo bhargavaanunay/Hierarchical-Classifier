@@ -7,7 +7,7 @@ class ToiCrawlerSpider(BaseSpider):
 
     name = "Toi"
     allowed_domains = ["timesofindia.indiatimes.com"]
-    print "\nEnter URL of the topic page:",
+    print "\nEnter URL of a seed page (page of an article, not a topic):"
     seed = raw_input()
     start_urls = [seed]
     idx1 = seed.find('.com/') + 5
