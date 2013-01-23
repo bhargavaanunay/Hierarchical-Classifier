@@ -16,13 +16,11 @@ class ToiCrawlerPipeline(object):
         if self.path[-1] == '/':
             self.path = self.path[:-1]
         print "\nEnter broad category:",
-        self.category = raw_input()
-        path_broad = self.path + '/' + self.category
-        fix_path(path_broad)
+        broad = raw_input()
         print "\nEnter specific category:",
         specific = raw_input()
-        self.category = self.category + '/' + specific
-        complete_path = path_broad + '/' + specific
+        self.category = broad + '/' + specific
+        complete_path = self.path + '/' + broad + '/' + specific
         fix_path(complete_path)
         print "\nEnter limit on number of articles to be saved:",
         self.limit = int(raw_input())

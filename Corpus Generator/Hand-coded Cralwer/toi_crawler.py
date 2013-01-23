@@ -3,6 +3,8 @@
 # Created by: Ayush Jaiswal
 #
 
+from path_fixer import fix_path
+
 class Crawler:
     
     '''This is a crawler for http://timesofindia.indiatimes.com (Times of India).
@@ -34,6 +36,7 @@ class Crawler:
         if root_path[-1] != '/':
                 root_path = root_path + '/'
         self.__path = root_path + self.__sp_category + '/'
+        fix_path(self.__path)
         
     def __get_page(self, url):
         '''Fetches the contents of the page associated with the URL.
