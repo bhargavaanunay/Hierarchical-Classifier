@@ -2,7 +2,6 @@ from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
 from TOI_Crawler.items import ToiCrawlerItem
-from scrapy.exceptions import CloseSpider
 import os
 
 class ToiCrawlerSpider(BaseSpider):
@@ -18,20 +17,16 @@ class ToiCrawlerSpider(BaseSpider):
     idx2 = seed.find('/', idx2 + 1)
     sp_category = seed[idx1:idx2]
     links_with_error = []
-    close_down = False
     
     def parse(self, response):
-        
-        if self.close_down:
-            raise CloseSpider('Done')
-        
         w = ToiCrawlerItem()
         currentURL = response.url
         if currentURL.find('/articleshow/') != -1:
             hxs = HtmlXPathSelector(response)
             title = hxs.select('//title/text()').extract()
             w['title'] = title
-            content = hxs.select('//tmp/text()').extract()
+            content = hxs.select('//tmp//text()').extract()
+            content =  ''.join(content)
             content1 = str(content)
             if content1.find('a') == -1:
                  con = hxs.select('//div[contains(@class,"Normal")]')
@@ -46,10 +41,8 @@ class ToiCrawlerSpider(BaseSpider):
                  w['content'] = content
                  w['url'] = currentURL
                  yield w
-        
         hxs = HtmlXPathSelector(response)
         sites = hxs.select('//a[contains(@href,"/%s")]/@href' % self.sp_category).extract()
-        
         for site in sites:
             site = str(site)
             idx = site.rfind('?')
